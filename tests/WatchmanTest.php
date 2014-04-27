@@ -70,7 +70,7 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
         $factory->shouldReceive('create')->with('watchman watch /var/www/foo')->once()->andReturn($process);
 
         $this->watchman->setProcessFactory($factory);
-        $this->assertEquals('/var/www/foo', $this->watchman->watch('/var/www/foo'));
+        $this->assertEquals('/var/www/foo', $this->watchman->watch('/var/www/foo')->getRoot());
     }
 
     /**

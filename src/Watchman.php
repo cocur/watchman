@@ -79,7 +79,7 @@ class Watchman
     {
         $process = $this->processFactory->create(sprintf('%s watch %s', $this->getBinary(), $directory));
 
-        return $this->runProcess($process)['watch'];
+        return new Watch($this, $this->runProcess($process)['watch']);
     }
 
     /**
