@@ -134,6 +134,29 @@ class Watchman
     }
 
     /**
+     * Executes the `trigger-list` command.
+     *
+     * @param string $directory Directory
+     *
+     * @return array List of triggers.
+     */
+    public function triggerList($directory)
+    {
+        $process = $this->processFactory->create(sprintf('%s trigger-list %s', $this->getBinary(), $directory));
+
+        return $this->runProcess($process)['triggers'];
+    }
+
+    public function triggerDelete($directory, $name)
+    {
+        $process = $this->processFactory->create(
+            sprintf('%s trigger-del %s %s', $this->getBinary(), $directory, $name)
+        );
+
+        return (bool)$this->runProcess($process)['deleted'];
+    }
+
+    /**
      * @param Process $process
      *
      * @return array JSON-decoded output of the watchman result.

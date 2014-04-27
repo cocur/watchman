@@ -1,0 +1,19 @@
+{
+    "version": "2.9.6",
+    "triggers": [
+        {
+            "name": "jsfiles",
+            "command": [
+                "ls",
+                "-al"
+            ],
+            "rules": [
+                {
+                    "pattern": "*.js",
+                    "include": true,
+                    "negated": false
+                }
+            ]
+        }
+    ]
+}

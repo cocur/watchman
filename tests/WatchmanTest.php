@@ -189,6 +189,50 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::triggerList()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function triggerListIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('trigger-list-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory->shouldReceive('create')->with('watchman trigger-list /var/www/foo')->once()->andReturn($process);
+
+        $this->watchman->setProcessFactory($factory);
+        $this->assertEquals('jsfiles', $this->watchman->triggerList('/var/www/foo')[0]['name']);
+    }
+
+    /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::triggerDelete()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function triggerDeleteIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('trigger-del-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory
+            ->shouldReceive('create')
+            ->with('watchman trigger-del /var/www/foo jsfiles')
+            ->once()
+            ->andReturn($process);
+
+        $this->watchman->setProcessFactory($factory);
+        $this->assertTrue($this->watchman->triggerDelete('/var/www/foo', 'jsfiles'));
+    }
+
+    /**
      * @return Cocur\Watchman\Process\ProcessFactory
      */
     protected function getProcessFactoryMock()
