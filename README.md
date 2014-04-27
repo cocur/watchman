@@ -1,5 +1,5 @@
-Watchman.php
-============
+cocur/watchman
+==============
 
 > PHP wrapper for [`facebook/watchman`](https://github.com/facebook/watchman).
 
@@ -10,6 +10,7 @@ Features
 
 Installation
 ------------
+
 
 Usage
 -----
@@ -43,3 +44,23 @@ Supported Watchman commands
 <input type="checkbox"> unsubscribe
 <input type="checkbox"> get-sockname
 <input type="checkbox">
+
+
+Changelog
+---------
+
+*Currently there exists no release.*
+
+
+Author
+------
+
+[**Florian Eckerstorfer**](http://florian.ec)
+
+- [Twitter](http://twitter.com/Florian_)
+
+
+License
+-------
+
+The MIT license applies to **cocur/watchman**. For the full copyright and license information, please view the LICENSE file distributed with this source code.
