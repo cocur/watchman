@@ -1,0 +1,4 @@
+{
+    "version": "2.9.6",
+    "error": "unable to resolve root /var/www/foo/: directory /var/www/foo is not watched"
+}

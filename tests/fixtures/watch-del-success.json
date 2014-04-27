@@ -1,0 +1,5 @@
+{
+    "version": "2.9.6",
+    "watch-del": true,
+    "root": "/var/www/foo"
+}

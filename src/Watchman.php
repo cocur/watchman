@@ -83,6 +83,32 @@ class Watchman
     }
 
     /**
+     * Executes the `watch-list` command.
+     * +
+     * @return string[] List of roots.
+     */
+    public function watchList()
+    {
+        $process = $this->processFactory->create(sprintf('%s watch-list', $this->getBinary()));
+
+        return $this->runProcess($process)['roots'];
+    }
+
+    /**
+     * Executes the `watch-del` command.
+     *
+     * @param string $directory
+     *
+     * @return boolean `true` if the watch has been deleted.
+     */
+    public function watchDelete($directory)
+    {
+        $process = $this->processFactory->create(sprintf('%s watch-del %s', $this->getBinary(), $directory));
+
+        return (bool)$this->runProcess($process)['watch-del'];
+    }
+
+    /**
      * Executes the `trigger` command.
      * @param string $directory Directory
      * @param string $name      Trigger name
@@ -122,6 +148,12 @@ class Watchman
             throw new \RuntimeException($process->getErrorOutput());
         }
 
-        return Json::decode($process->getOutput(), true);
+        $output = Json::decode($process->getOutput(), true);
+
+        if (!empty($output['error'])) {
+            throw new \RuntimeException($output['error']);
+        }
+
+        return $output;
     }
 }

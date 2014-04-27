@@ -1,0 +1,6 @@
+{
+    "version": "2.9.6",
+    "roots": [
+        "/var/www/foo"
+    ]
+}

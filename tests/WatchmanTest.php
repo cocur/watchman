@@ -96,6 +96,76 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @covers Cocur\Watchman\Watchman::watchList()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function watchListIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('watch-list-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory->shouldReceive('create')->with('watchman watch-list')->once()->andReturn($process);
+
+        $this->watchman->setProcessFactory($factory);
+        $this->assertEquals('/var/www/foo', $this->watchman->watchList()[0]);
+    }
+
+    /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::watchDelete()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function watchDeleteIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('watch-del-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory->shouldReceive('create')->with('watchman watch-del /var/www/foo')->once()->andReturn($process);
+
+        $this->watchman->setProcessFactory($factory);
+        $this->assertTrue($this->watchman->watchDelete('/var/www/foo'));
+    }
+
+    /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::watchDelete()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function watchDeleteCausesError()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('watch-del-error.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory->shouldReceive('create')->with('watchman watch-del /var/www/foo')->once()->andReturn($process);
+
+        $this->watchman->setProcessFactory($factory);
+
+        try {
+            $this->watchman->watchDelete('/var/www/foo');
+            $this->assertTrue(false);
+        } catch (\RuntimeException $e) {
+            $this->assertTrue(true);
+            $this->assertEquals(
+                'unable to resolve root /var/www/foo/: directory /var/www/foo is not watched',
+                $e->getMessage()
+            );
+        }
+    }
+
+    /**
+     * @test
      * @covers Cocur\Watchman\Watchman::trigger()
      * @covers Cocur\Watchman\Watchman::runProcess()
      */
