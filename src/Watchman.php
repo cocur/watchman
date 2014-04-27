@@ -147,6 +147,14 @@ class Watchman
         return $this->runProcess($process)['triggers'];
     }
 
+    /**
+     * Executes the `trigger-delete` command.
+     *
+     * @param string $directory Directory
+     * @param string $name      Trigger name.
+     *
+     * @return boolean `true` if the trigger has been deleted.
+     */
     public function triggerDelete($directory, $name)
     {
         $process = $this->processFactory->create(
@@ -154,6 +162,17 @@ class Watchman
         );
 
         return (bool)$this->runProcess($process)['deleted'];
+    }
+
+    /**
+     * Executes the `shutdown-server` command.
+     *
+     * @return void
+     */
+    public function shutdownServer()
+    {
+        $process = $this->processFactory->create(sprintf('%s shutdown-server', $this->getBinary()));
+        $this->runProcess($process);
     }
 
     /**

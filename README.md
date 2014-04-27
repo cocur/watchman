@@ -39,7 +39,7 @@ Supported Watchman commands
 - ~~since~~
 - ~~log-level~~
 - ~~log~~
-- ~~shutdown-server~~
+- shutdown-server ✓
 - ~~subscribe~~
 - ~~unsubscribe~~
 - ~~get-sockname~~

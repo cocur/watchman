@@ -233,6 +233,26 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::triggerDelete()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function shutdownServerIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn(null);
+
+        $factory = $this->getProcessFactoryMock();
+        $factory->shouldReceive('create')->with('watchman shutdown-server')->once()->andReturn($process);
+
+        $this->watchman->setProcessFactory($factory);
+        $this->watchman->shutdownServer();
+    }
+
+    /**
      * @return Cocur\Watchman\Process\ProcessFactory
      */
     protected function getProcessFactoryMock()
