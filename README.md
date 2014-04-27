@@ -3,6 +3,9 @@ cocur/watchman
 
 > PHP wrapper for [`facebook/watchman`](https://github.com/facebook/watchman).
 
+[![Build Status](http://img.shields.io/travis/cocur/watchman.svg)](https://travis-ci.org/cocur/watchman)
+[![Code Coverage](http://img.shields.io/coveralls/cocur/watchman.svg)](https://coveralls.io/r/cocur/watchman)
+
 
 Features
 --------
