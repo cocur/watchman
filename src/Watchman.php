@@ -176,15 +176,19 @@ class Watchman
     /**
      * Executes the `trigger-delete` command.
      *
-     * @param string $directory Directory
-     * @param string $name      Trigger name.
+     * @param Watch|string $watch Watch or directory name.
+     * @param string       $name  Trigger name.
      *
      * @return boolean `true` if the trigger has been deleted.
      */
-    public function deleteTrigger($directory, $name)
+    public function deleteTrigger($root, $name)
     {
+        if ($root instanceof Watch) {
+            $root = $root->getRoot();
+        }
+
         $process = $this->processFactory->create(
-            sprintf('%s trigger-del %s %s', $this->getBinary(), $directory, $name)
+            sprintf('%s trigger-del %s %s', $this->getBinary(), $root, $name)
         );
 
         return (bool)$this->runProcess($process)['deleted'];

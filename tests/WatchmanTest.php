@@ -185,7 +185,40 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
             ->andReturn($process);
 
         $this->watchman->setProcessFactory($factory);
-        $this->assertEquals('foobar', $this->watchman->addTrigger('/var/www/foo', 'foobar', '*.js', 'ls -al')->getName());
+        $this->assertEquals(
+            'foobar',
+            $this->watchman->addTrigger('/var/www/foo', 'foobar', '*.js', 'ls -al')->getName()
+        );
+    }
+
+    /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::addTrigger()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function addTriggerWithWatchObjectIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('trigger-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory
+            ->shouldReceive('create')
+            ->with('watchman -- trigger /var/www/foo foobar *.js -- ls -al')
+            ->once()
+            ->andReturn($process);
+
+        $watch = m::mock('Cocur\Watchman\Watch');
+        $watch->shouldReceive('getRoot')->once()->andReturn('/var/www/foo');
+
+        $this->watchman->setProcessFactory($factory);
+        $this->assertEquals(
+            'foobar',
+            $this->watchman->addTrigger($watch, 'foobar', '*.js', 'ls -al')->getName()
+        );
     }
 
     /**
@@ -212,6 +245,32 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @covers Cocur\Watchman\Watchman::listTriggers()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function listTriggersWithWatchObjectIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('trigger-list-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory->shouldReceive('create')->with('watchman trigger-list /var/www/foo')->once()->andReturn($process);
+
+        $watch = m::mock('Cocur\Watchman\Watch');
+        $watch->shouldReceive('getRoot')->once()->andReturn('/var/www/foo');
+
+        $this->watchman->setProcessFactory($factory);
+        $trigger = $this->watchman->listTriggers($watch)[0];
+
+        $this->assertEquals('jsfiles', $trigger->getName());
+        $this->assertEquals(['ls', '-al'], $trigger->getData()['command']);
+    }
+
+    /**
+     * @test
      * @covers Cocur\Watchman\Watchman::deleteTrigger()
      * @covers Cocur\Watchman\Watchman::runProcess()
      */
@@ -232,6 +291,33 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
 
         $this->watchman->setProcessFactory($factory);
         $this->assertTrue($this->watchman->deleteTrigger('/var/www/foo', 'jsfiles'));
+    }
+
+    /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::deleteTrigger()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function deleteTriggerWithWatchObjectIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('trigger-del-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory
+            ->shouldReceive('create')
+            ->with('watchman trigger-del /var/www/foo jsfiles')
+            ->once()
+            ->andReturn($process);
+
+        $watch = m::mock('Cocur\Watchman\Watch');
+        $watch->shouldReceive('getRoot')->once()->andReturn('/var/www/foo');
+
+        $this->watchman->setProcessFactory($factory);
+        $this->assertTrue($this->watchman->deleteTrigger($watch, 'jsfiles'));
     }
 
     /**
