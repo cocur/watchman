@@ -111,7 +111,7 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
         $factory->shouldReceive('create')->with('watchman watch-list')->once()->andReturn($process);
 
         $this->watchman->setProcessFactory($factory);
-        $this->assertEquals('/var/www/foo', $this->watchman->watchList()[0]);
+        $this->assertEquals('/var/www/foo', $this->watchman->watchList()[0]->getRoot());
     }
 
     /**
@@ -185,7 +185,7 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
             ->andReturn($process);
 
         $this->watchman->setProcessFactory($factory);
-        $this->assertEquals('foobar', $this->watchman->trigger('/var/www/foo', 'foobar', '*.js', 'ls -al'));
+        $this->assertEquals('foobar', $this->watchman->trigger('/var/www/foo', 'foobar', '*.js', 'ls -al')->getName());
     }
 
     /**
@@ -205,7 +205,9 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
         $factory->shouldReceive('create')->with('watchman trigger-list /var/www/foo')->once()->andReturn($process);
 
         $this->watchman->setProcessFactory($factory);
-        $this->assertEquals('jsfiles', $this->watchman->triggerList('/var/www/foo')[0]['name']);
+        $trigger = $this->watchman->triggerList('/var/www/foo')[0];
+        $this->assertEquals('jsfiles', $trigger->getName());
+        $this->assertEquals(['ls', '-al'], $trigger->getData()['command']);
     }
 
     /**

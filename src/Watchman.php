@@ -91,7 +91,13 @@ class Watchman
     {
         $process = $this->processFactory->create(sprintf('%s watch-list', $this->getBinary()));
 
-        return $this->runProcess($process)['roots'];
+        $rootNames = $this->runProcess($process)['roots'];
+        $roots = [];
+        foreach ($rootNames as $rootName) {
+            $roots[] = new Watch($this, $rootName);
+        }
+
+        return $roots;
     }
 
     /**
@@ -110,41 +116,61 @@ class Watchman
 
     /**
      * Executes the `trigger` command.
-     * @param string $directory Directory
-     * @param string $name      Trigger name
-     * @param string $patterns  Patterns
-     * @param string $command   Command to execute
+     * @param Watch|string $watch     Watch object or path to root.
+     * @param string       $name      Trigger name
+     * @param string       $patterns  Patterns
+     * @param string       $command   Command to execute
      *
      * @return string Name of the added trigger.
      *
      * @throws \RuntimeException if the trigger could not be created.
      */
-    public function trigger($directory, $name, $patterns, $command)
+    public function trigger($watch, $name, $patterns, $command)
     {
+        if ($watch instanceof Watch) {
+            $root = $watch->getRoot();
+        } else {
+            $root = $watch;
+            $watch = new Watch($this, $root);
+        }
+
         $process = $this->processFactory->create(sprintf(
             '%s -- trigger %s %s %s -- %s',
             $this->binary,
-            $directory,
+            $root,
             $name,
             $patterns,
             $command
         ));
 
-        return $this->runProcess($process)['triggerid'];
+        return new Trigger($watch, $this->runProcess($process)['triggerid']);
     }
 
     /**
      * Executes the `trigger-list` command.
      *
-     * @param string $directory Directory
+     * @param Watch|string $directory Directory
      *
      * @return array List of triggers.
      */
-    public function triggerList($directory)
+    public function triggerList($watch)
     {
-        $process = $this->processFactory->create(sprintf('%s trigger-list %s', $this->getBinary(), $directory));
+        if ($watch instanceof Watch) {
+            $root = $watch->getRoot();
+        } else {
+            $root = $watch;
+            $watch = new Watch($this, $root);
+        }
 
-        return $this->runProcess($process)['triggers'];
+        $process = $this->processFactory->create(sprintf('%s trigger-list %s', $this->getBinary(), $root));
+
+        $triggerNames = $this->runProcess($process)['triggers'];
+        $triggers = [];
+        foreach ($triggerNames as $triggerData) {
+            $triggers[] = new Trigger($watch, $triggerData['name'], $triggerData);
+        }
+
+        return $triggers;
     }
 
     /**

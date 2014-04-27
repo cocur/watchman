@@ -22,8 +22,8 @@ Usage
 use Cocur\Watchman\Watchman;
 
 $watchman = new Watchman();
-$watchman->watch('/var/www/foobar');
-$watchman->trigger('/var/www/foobar', 'foo', '*.js', 'ls -al');
+$watch = $watchman->watch('/var/www/foobar');
+$watch->addTrigger('foo', '*.js', 'ls -al');
 ```
 
 
