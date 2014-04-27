@@ -43,7 +43,7 @@ Supported Watchman commands
 - ~~subscribe~~
 - ~~unsubscribe~~
 - ~~get-sockname~~
--
+
 
 Changelog
 ---------
