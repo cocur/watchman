@@ -40,6 +40,16 @@ class Watch
     }
 
     /**
+     * Deletes the watch.
+     *
+     * @return boolean `true` if the watch has been deleted.
+     */
+    public function delete()
+    {
+        return $this->watchman->watchDelete($this->root);
+    }
+
+    /**
      * Adds a trigger to the watch.
      *
      * @param string $name     Name of the trigger.

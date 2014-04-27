@@ -47,9 +47,20 @@ class WatchTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @covers Cocur\Watchman\Watch::delete()
+     */
+    public function deleteDeletesTheWatch()
+    {
+        $this->watchman->shouldReceive('watchDelete')->with('/var/www/foo')->once()->andReturn(true);
+
+        $this->assertTrue($this->watch->delete());
+    }
+
+    /**
+     * @test
      * @covers Cocur\Watchman\Watch::addTrigger()
      */
-    public function addTrigger()
+    public function addTriggerAddsTriggerToWatch()
     {
         $this->watchman
             ->shouldReceive('trigger')
@@ -64,7 +75,7 @@ class WatchTest extends \PHPUnit_Framework_TestCase
      * @test
      * @covers Cocur\Watchman\Watch::deleteTrigger()
      */
-    public function deleteTrigger()
+    public function deleteTriggerDeletesTriggerFromWatch()
     {
         $this->watchman->shouldReceive('triggerDelete')->with($this->root, 'foobar')->once()->andReturn(true);
 
@@ -75,7 +86,7 @@ class WatchTest extends \PHPUnit_Framework_TestCase
      * @test
      * @covers Cocur\Watchman\Watch::listTriggers()
      */
-    public function listTriggers()
+    public function listTriggersListTriggersFromWatch()
     {
         $this->watchman
             ->shouldReceive('triggerList')

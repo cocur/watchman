@@ -23,7 +23,11 @@ use Cocur\Watchman\Watchman;
 
 $watchman = new Watchman();
 $watch = $watchman->watch('/var/www/foobar');
-$watch->addTrigger('foo', '*.js', 'ls -al');
+$trigger = $watch->addTrigger('foo', '*.js', 'ls -al');
+
+// Later
+$trigger->delete();
+$watch->delete();
 ```
 
 
