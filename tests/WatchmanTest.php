@@ -236,7 +236,7 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @covers Cocur\Watchman\Watchman::triggerDelete()
+     * @covers Cocur\Watchman\Watchman::shutdownServer()
      * @covers Cocur\Watchman\Watchman::runProcess()
      */
     public function shutdownServerIsSuccessful()
