@@ -206,6 +206,18 @@ class Watchman
     }
 
     /**
+     * Executes the `get-sockname` command.
+     *
+     * @return string Name of the socket Watchman listens to.
+     */
+    public function getSockname()
+    {
+        $process = $this->processFactory->create(sprintf('%s get-sockname', $this->getBinary()));
+
+        return $this->runProcess($process)['sockname'];
+    }
+
+    /**
      * @param Process $process
      *
      * @return array JSON-decoded output of the watchman result.

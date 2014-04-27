@@ -341,6 +341,26 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::getSockname()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function getSocknameIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('get-sockname-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory->shouldReceive('create')->with('watchman get-sockname')->once()->andReturn($process);
+
+        $this->watchman->setProcessFactory($factory);
+        $this->assertEquals('/var/folders/.watchman.florian', $this->watchman->getSockname());
+    }
+
+    /**
      * @return Cocur\Watchman\Process\ProcessFactory
      */
     protected function getProcessFactoryMock()

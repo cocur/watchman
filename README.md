@@ -69,7 +69,7 @@ Supported Watchman commands
 - shutdown-server ✓
 - ~~subscribe~~
 - ~~unsubscribe~~
-- ~~get-sockname~~
+- get-sockname ✓
 
 
 Changelog
