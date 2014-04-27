@@ -28,12 +28,12 @@ Supported Watchman commands
 ---------------------------
 
 - watch ✓
-- ~~watch-list~~
-- ~~watch-del~~
+- watch-list ✓
+- watch-del ✓
 - ~~clock~~
 - trigger ✓
-- ~~trigger-list~~
-- ~~trigger-del~~
+- trigger-list ✓
+- trigger-del ✓
 - ~~find~~
 - ~~query~~
 - ~~since~~
