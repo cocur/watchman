@@ -27,24 +27,23 @@ $watchman->trigger('/var/www/foobar', 'foo', '*.js', 'ls -al');
 Supported Watchman commands
 ---------------------------
 
-- [x] watch
-- [ ] watch-list
-- [ ] watch-del
-- [ ] clock
-- [x] trigger
-- [ ] trigger-list
-- [ ] trigger-del
-- [ ] find
-- [ ] query
-- [ ] since
-- [ ] log-level
-- [ ] log
-- [ ] shutdown-server
-- [ ] subscribe
-- [ ] unsubscribe
-- [ ] get-sockname
-- [ ]
-
+- watch ✓
+- ~~watch-list~~
+- ~~watch-del~~
+- ~~clock~~
+- trigger ✓
+- ~~trigger-list~~
+- ~~trigger-del~~
+- ~~find~~
+- ~~query~~
+- ~~since~~
+- ~~log-level~~
+- ~~log~~
+- ~~shutdown-server~~
+- ~~subscribe~~
+- ~~unsubscribe~~
+- ~~get-sockname~~
+-
 
 Changelog
 ---------
