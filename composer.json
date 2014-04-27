@@ -13,7 +13,8 @@
     ],
     "require": {
         "php":               ">=5.4",
-        "symfony/process":   "~2.5@beta"
+        "symfony/process":   "~2.5@beta",
+        "braincrafted/json": "~0.2"
     },
     "require-dev": {
         "phpunit/phpunit":        "~4.0",

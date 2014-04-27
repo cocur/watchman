@@ -2,8 +2,9 @@
 
 namespace Cocur\Watchman;
 
-use Symfony\Component\Process\Process;
+use Braincrafted\Json\Json;
 use Cocur\Watchman\Process\ProcessFactory;
+use Symfony\Component\Process\Process;
 
 /**
  * Watchman
@@ -70,7 +71,7 @@ class Watchman
      *
      * @param string $directory Directory to watch.
      *
-     * @return boolean `true` if watcher was started successfully.
+     * @return string Name of the watched directory.
      *
      * @throws \RuntimeException when the watcher could not be created.
      */
@@ -78,7 +79,7 @@ class Watchman
     {
         $process = $this->processFactory->create(sprintf('%s watch %s', $this->getBinary(), $directory));
 
-        return $this->runProcess($process);
+        return $this->runProcess($process)['watch'];
     }
 
     /**
@@ -88,11 +89,11 @@ class Watchman
      * @param string $patterns  Patterns
      * @param string $command   Command to execute
      *
-     * @return boolean `true` iff trigger was added successfully.
+     * @return string Name of the added trigger.
      *
      * @throws \RuntimeException if the trigger could not be created.
      */
-    public function addTrigger($directory, $name, $patterns, $command)
+    public function trigger($directory, $name, $patterns, $command)
     {
         $process = $this->processFactory->create(sprintf(
             '%s -- trigger %s %s %s -- %s',
@@ -103,13 +104,13 @@ class Watchman
             $command
         ));
 
-        return $this->runProcess($process);
+        return $this->runProcess($process)['triggerid'];
     }
 
     /**
      * @param Process $process
      *
-     * @return boolean `true` iff processed runned without errors.
+     * @return array JSON-decoded output of the watchman result.
      *
      * @throws \RuntimeException when the watcher could not be created.
      */
@@ -121,6 +122,6 @@ class Watchman
             throw new \RuntimeException($process->getErrorOutput());
         }
 
-        return true;
+        return Json::decode($process->getOutput(), true);
     }
 }

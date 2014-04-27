@@ -64,12 +64,13 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
         $process->shouldReceive('run')->once();
         $process->shouldReceive('stop')->once();
         $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('watch-success.json'));
 
         $factory = $this->getProcessFactoryMock();
         $factory->shouldReceive('create')->with('watchman watch /var/www/foo')->once()->andReturn($process);
 
         $this->watchman->setProcessFactory($factory);
-        $this->assertTrue($this->watchman->watch('/var/www/foo'));
+        $this->assertEquals('/var/www/foo', $this->watchman->watch('/var/www/foo'));
     }
 
     /**
@@ -95,15 +96,16 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @covers Cocur\Watchman\Watchman::addTrigger()
+     * @covers Cocur\Watchman\Watchman::trigger()
      * @covers Cocur\Watchman\Watchman::runProcess()
      */
-    public function addTriggerIsSuccessful()
+    public function triggerIsSuccessful()
     {
         $process = $this->getProcessMock();
         $process->shouldReceive('run')->once();
         $process->shouldReceive('stop')->once();
         $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('trigger-success.json'));
 
         $factory = $this->getProcessFactoryMock();
         $factory
@@ -113,7 +115,7 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
             ->andReturn($process);
 
         $this->watchman->setProcessFactory($factory);
-        $this->assertTrue($this->watchman->addTrigger('/var/www/foo', 'foobar', '*.js', 'ls -al'));
+        $this->assertEquals('foobar', $this->watchman->trigger('/var/www/foo', 'foobar', '*.js', 'ls -al'));
     }
 
     /**
@@ -130,5 +132,10 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
     protected function getProcessMock()
     {
         return m::mock('Symfony\Component\Process\Process');
+    }
+
+    protected function getFixtures($name)
+    {
+        return file_get_contents(sprintf('%s/fixtures/%s', __DIR__, $name));
     }
 }
