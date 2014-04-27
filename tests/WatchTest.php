@@ -29,6 +29,7 @@ class WatchTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @covers Cocur\Watchman\Watch::__construct()
      * @covers Cocur\Watchman\Watch::getWatchman()
      */
     public function getWatchman()
@@ -38,6 +39,7 @@ class WatchTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @covers Cocur\Watchman\Watch::__construct()
      * @covers Cocur\Watchman\Watch::getRoot()
      */
     public function getRoot()
