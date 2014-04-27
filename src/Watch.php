@@ -46,7 +46,7 @@ class Watch
      */
     public function delete()
     {
-        return $this->watchman->watchDelete($this->root);
+        return $this->watchman->deleteWatch($this->root);
     }
 
     /**
@@ -62,7 +62,7 @@ class Watch
      */
     public function addTrigger($name, $patterns, $command)
     {
-        return $this->watchman->trigger($this->root, $name, $patterns, $command);
+        return $this->watchman->addTrigger($this->root, $name, $patterns, $command);
     }
 
     /**
@@ -74,7 +74,7 @@ class Watch
      */
     public function deleteTrigger($name)
     {
-        return $this->watchman->triggerDelete($this->root, $name);
+        return $this->watchman->deleteTrigger($this->root, $name);
     }
 
     /**
@@ -84,6 +84,6 @@ class Watch
      */
     public function listTriggers()
     {
-        return $this->watchman->triggerList($this->root);
+        return $this->watchman->listTriggers($this->root);
     }
 }

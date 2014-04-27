@@ -22,10 +22,16 @@ Usage
 use Cocur\Watchman\Watchman;
 
 $watchman = new Watchman();
-$watch = $watchman->watch('/var/www/foobar');
+$watch = $watchman->addWatch('/var/www/foobar');
 $trigger = $watch->addTrigger('foo', '*.js', 'ls -al');
 
-// Later
+// Retrieve all watched directories
+$watched = $watchman->listWatches();
+
+// Retrieve all triggers from a watch
+$triggers = $watch->listTriggers();
+
+// Later...
 $trigger->delete();
 $watch->delete();
 ```

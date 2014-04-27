@@ -51,7 +51,7 @@ class WatchTest extends \PHPUnit_Framework_TestCase
      */
     public function deleteDeletesTheWatch()
     {
-        $this->watchman->shouldReceive('watchDelete')->with('/var/www/foo')->once()->andReturn(true);
+        $this->watchman->shouldReceive('deleteWatch')->with('/var/www/foo')->once()->andReturn(true);
 
         $this->assertTrue($this->watch->delete());
     }
@@ -63,7 +63,7 @@ class WatchTest extends \PHPUnit_Framework_TestCase
     public function addTriggerAddsTriggerToWatch()
     {
         $this->watchman
-            ->shouldReceive('trigger')
+            ->shouldReceive('addTrigger')
             ->with($this->root, 'foobar', '*.js', 'ls -al')
             ->once()
             ->andReturn('foobar');
@@ -77,7 +77,7 @@ class WatchTest extends \PHPUnit_Framework_TestCase
      */
     public function deleteTriggerDeletesTriggerFromWatch()
     {
-        $this->watchman->shouldReceive('triggerDelete')->with($this->root, 'foobar')->once()->andReturn(true);
+        $this->watchman->shouldReceive('deleteTrigger')->with($this->root, 'foobar')->once()->andReturn(true);
 
         $this->assertTrue($this->watch->deleteTrigger('foobar'));
     }
@@ -89,7 +89,7 @@ class WatchTest extends \PHPUnit_Framework_TestCase
     public function listTriggersListTriggersFromWatch()
     {
         $this->watchman
-            ->shouldReceive('triggerList')
+            ->shouldReceive('listTriggers')
             ->with($this->root)
             ->once()
             ->andReturn([[ 'name' => 'jsfiles' ]]);

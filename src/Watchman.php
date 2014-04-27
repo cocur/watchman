@@ -75,7 +75,7 @@ class Watchman
      *
      * @throws \RuntimeException when the watcher could not be created.
      */
-    public function watch($directory)
+    public function addWatch($directory)
     {
         $process = $this->processFactory->create(sprintf('%s watch %s', $this->getBinary(), $directory));
 
@@ -87,7 +87,7 @@ class Watchman
      * +
      * @return string[] List of roots.
      */
-    public function watchList()
+    public function listWatches()
     {
         $process = $this->processFactory->create(sprintf('%s watch-list', $this->getBinary()));
 
@@ -107,7 +107,7 @@ class Watchman
      *
      * @return boolean `true` if the watch has been deleted.
      */
-    public function watchDelete($directory)
+    public function deleteWatch($directory)
     {
         $process = $this->processFactory->create(sprintf('%s watch-del %s', $this->getBinary(), $directory));
 
@@ -125,7 +125,7 @@ class Watchman
      *
      * @throws \RuntimeException if the trigger could not be created.
      */
-    public function trigger($watch, $name, $patterns, $command)
+    public function addTrigger($watch, $name, $patterns, $command)
     {
         if ($watch instanceof Watch) {
             $root = $watch->getRoot();
@@ -153,7 +153,7 @@ class Watchman
      *
      * @return array List of triggers.
      */
-    public function triggerList($watch)
+    public function listTriggers($watch)
     {
         if ($watch instanceof Watch) {
             $root = $watch->getRoot();
@@ -181,7 +181,7 @@ class Watchman
      *
      * @return boolean `true` if the trigger has been deleted.
      */
-    public function triggerDelete($directory, $name)
+    public function deleteTrigger($directory, $name)
     {
         $process = $this->processFactory->create(
             sprintf('%s trigger-del %s %s', $this->getBinary(), $directory, $name)

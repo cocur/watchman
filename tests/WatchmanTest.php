@@ -55,10 +55,10 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @covers Cocur\Watchman\Watchman::watch()
+     * @covers Cocur\Watchman\Watchman::addWatch()
      * @covers Cocur\Watchman\Watchman::runProcess()
      */
-    public function watchIsSuccessful()
+    public function addWatchIsSuccessful()
     {
         $process = $this->getProcessMock();
         $process->shouldReceive('run')->once();
@@ -70,16 +70,16 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
         $factory->shouldReceive('create')->with('watchman watch /var/www/foo')->once()->andReturn($process);
 
         $this->watchman->setProcessFactory($factory);
-        $this->assertEquals('/var/www/foo', $this->watchman->watch('/var/www/foo')->getRoot());
+        $this->assertEquals('/var/www/foo', $this->watchman->addWatch('/var/www/foo')->getRoot());
     }
 
     /**
      * @test
-     * @covers Cocur\Watchman\Watchman::watch()
+     * @covers Cocur\Watchman\Watchman::addWatch()
      * @covers Cocur\Watchman\Watchman::runProcess()
      * @expectedException \RuntimeException
      */
-    public function watchReturnsError()
+    public function addWatchReturnsError()
     {
         $process = $this->getProcessMock();
         $process->shouldReceive('run')->once();
@@ -91,15 +91,15 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
         $factory->shouldReceive('create')->with('watchman watch /var/www/foo')->once()->andReturn($process);
 
         $this->watchman->setProcessFactory($factory);
-        $this->watchman->watch('/var/www/foo');
+        $this->watchman->addWatch('/var/www/foo');
     }
 
     /**
      * @test
-     * @covers Cocur\Watchman\Watchman::watchList()
+     * @covers Cocur\Watchman\Watchman::listWatches()
      * @covers Cocur\Watchman\Watchman::runProcess()
      */
-    public function watchListIsSuccessful()
+    public function listWatchesIsSuccessful()
     {
         $process = $this->getProcessMock();
         $process->shouldReceive('run')->once();
@@ -111,15 +111,15 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
         $factory->shouldReceive('create')->with('watchman watch-list')->once()->andReturn($process);
 
         $this->watchman->setProcessFactory($factory);
-        $this->assertEquals('/var/www/foo', $this->watchman->watchList()[0]->getRoot());
+        $this->assertEquals('/var/www/foo', $this->watchman->listWatches()[0]->getRoot());
     }
 
     /**
      * @test
-     * @covers Cocur\Watchman\Watchman::watchDelete()
+     * @covers Cocur\Watchman\Watchman::deleteWatch()
      * @covers Cocur\Watchman\Watchman::runProcess()
      */
-    public function watchDeleteIsSuccessful()
+    public function deleteWatchIsSuccessful()
     {
         $process = $this->getProcessMock();
         $process->shouldReceive('run')->once();
@@ -131,15 +131,15 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
         $factory->shouldReceive('create')->with('watchman watch-del /var/www/foo')->once()->andReturn($process);
 
         $this->watchman->setProcessFactory($factory);
-        $this->assertTrue($this->watchman->watchDelete('/var/www/foo'));
+        $this->assertTrue($this->watchman->deleteWatch('/var/www/foo'));
     }
 
     /**
      * @test
-     * @covers Cocur\Watchman\Watchman::watchDelete()
+     * @covers Cocur\Watchman\Watchman::deleteWatch()
      * @covers Cocur\Watchman\Watchman::runProcess()
      */
-    public function watchDeleteCausesError()
+    public function deleteWatchCausesError()
     {
         $process = $this->getProcessMock();
         $process->shouldReceive('run')->once();
@@ -153,7 +153,7 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
         $this->watchman->setProcessFactory($factory);
 
         try {
-            $this->watchman->watchDelete('/var/www/foo');
+            $this->watchman->deleteWatch('/var/www/foo');
             $this->assertTrue(false);
         } catch (\RuntimeException $e) {
             $this->assertTrue(true);
@@ -166,10 +166,10 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @covers Cocur\Watchman\Watchman::trigger()
+     * @covers Cocur\Watchman\Watchman::addTrigger()
      * @covers Cocur\Watchman\Watchman::runProcess()
      */
-    public function triggerIsSuccessful()
+    public function addTriggerIsSuccessful()
     {
         $process = $this->getProcessMock();
         $process->shouldReceive('run')->once();
@@ -185,15 +185,15 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
             ->andReturn($process);
 
         $this->watchman->setProcessFactory($factory);
-        $this->assertEquals('foobar', $this->watchman->trigger('/var/www/foo', 'foobar', '*.js', 'ls -al')->getName());
+        $this->assertEquals('foobar', $this->watchman->addTrigger('/var/www/foo', 'foobar', '*.js', 'ls -al')->getName());
     }
 
     /**
      * @test
-     * @covers Cocur\Watchman\Watchman::triggerList()
+     * @covers Cocur\Watchman\Watchman::listTriggers()
      * @covers Cocur\Watchman\Watchman::runProcess()
      */
-    public function triggerListIsSuccessful()
+    public function listTriggersIsSuccessful()
     {
         $process = $this->getProcessMock();
         $process->shouldReceive('run')->once();
@@ -205,17 +205,17 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
         $factory->shouldReceive('create')->with('watchman trigger-list /var/www/foo')->once()->andReturn($process);
 
         $this->watchman->setProcessFactory($factory);
-        $trigger = $this->watchman->triggerList('/var/www/foo')[0];
+        $trigger = $this->watchman->listTriggers('/var/www/foo')[0];
         $this->assertEquals('jsfiles', $trigger->getName());
         $this->assertEquals(['ls', '-al'], $trigger->getData()['command']);
     }
 
     /**
      * @test
-     * @covers Cocur\Watchman\Watchman::triggerDelete()
+     * @covers Cocur\Watchman\Watchman::deleteTrigger()
      * @covers Cocur\Watchman\Watchman::runProcess()
      */
-    public function triggerDeleteIsSuccessful()
+    public function deleteTriggerIsSuccessful()
     {
         $process = $this->getProcessMock();
         $process->shouldReceive('run')->once();
@@ -231,7 +231,7 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
             ->andReturn($process);
 
         $this->watchman->setProcessFactory($factory);
-        $this->assertTrue($this->watchman->triggerDelete('/var/www/foo', 'jsfiles'));
+        $this->assertTrue($this->watchman->deleteTrigger('/var/www/foo', 'jsfiles'));
     }
 
     /**
