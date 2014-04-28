@@ -61,7 +61,7 @@ Supported Watchman commands
 - trigger ✓
 - trigger-list ✓
 - trigger-del ✓
-- ~~find~~
+- find ✓
 - ~~query~~
 - ~~since~~
 - ~~log-level~~

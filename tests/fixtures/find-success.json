@@ -1,0 +1,38 @@
+{
+    "version": "2.9.6",
+    "clock": "c:1398642060:75924:1:17",
+    "files": [
+        {
+            "oclock": "c:1398642060:75924:1:1",
+            "new": true,
+            "exists": true,
+            "size": 0,
+            "name": "sass/main.scss",
+            "gid": 20,
+            "dev": 16777223,
+            "nlink": 1,
+            "mode": 33188,
+            "uid": 502,
+            "mtime": 1383919341,
+            "ctime": 1396607917,
+            "ino": 45077975,
+            "cclock": "c:1398642060:75924:1:1"
+        },
+        {
+            "oclock": "c:1398642060:75924:1:1",
+            "new": true,
+            "exists": true,
+            "size": 0,
+            "name": "sass/_reset.scss",
+            "gid": 20,
+            "dev": 16777223,
+            "nlink": 1,
+            "mode": 33188,
+            "uid": 502,
+            "mtime": 1383919341,
+            "ctime": 1396607917,
+            "ino": 45077982,
+            "cclock": "c:1398642060:75924:1:1"
+        }
+    ]
+}

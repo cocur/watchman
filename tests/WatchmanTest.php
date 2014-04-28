@@ -404,6 +404,49 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::find()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function findIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('find-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory->shouldReceive('create')->with('watchman find /var/www/foo *.scss')->once()->andReturn($process);
+
+        $this->watchman->setProcessFactory($factory);
+        $this->assertEquals('sass/main.scss', $this->watchman->find('/var/www/foo', '*.scss')[0]['name']);
+    }
+
+    /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::find()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function findWithWatchObjectIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('find-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory->shouldReceive('create')->with('watchman find /var/www/foo *.scss')->once()->andReturn($process);
+
+        $watch = m::mock('Cocur\Watchman\Watch');
+        $watch->shouldReceive('getRoot')->once()->andReturn('/var/www/foo');
+
+        $this->watchman->setProcessFactory($factory);
+        $this->assertEquals('sass/main.scss', $this->watchman->find($watch, '*.scss')[0]['name']);
+    }
+
+    /**
      * @return Cocur\Watchman\Process\ProcessFactory
      */
     protected function getProcessFactoryMock()
