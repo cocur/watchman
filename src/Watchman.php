@@ -255,6 +255,27 @@ class Watchman
     }
 
     /**
+     * Executes the `log` command.
+     *
+     * @param string $level   Log level (debug|error)
+     * @param string $message Message to log
+     *
+     * @return boolean `true` if the message has been logged.
+     */
+    public function log($level, $message)
+    {
+        if (!in_array($level, ['debug', 'error'])) {
+            throw new \InvalidArgumentException(
+                sprintf('Log level "%s" does not exist. Must be one of: debug, error', $level)
+            );
+        }
+
+        $process = $this->processFactory->create(sprintf('%s log %s "%s"', $this->getBinary(), $level, $message));
+
+        return (bool)$this->runProcess($process)['logged'];
+    }
+
+    /**
      * @param Process $process
      *
      * @return array JSON-decoded output of the watchman result.
