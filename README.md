@@ -63,7 +63,7 @@ Supported Watchman commands
 - trigger-del ✓
 - find ✓
 - query ✓
-- ~~since~~
+- since ✓
 - log-level ✓
 - log ✓
 - shutdown-server ✓

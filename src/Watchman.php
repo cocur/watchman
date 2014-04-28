@@ -332,6 +332,28 @@ class Watchman
     }
 
     /**
+     * Executes the `since` command.
+     *
+     * @param Watch|string $root      Watch or root directory.
+     * @param string       $clockSpec Clock spec.
+     * @param string       $pattern   Pattern (optional).
+     *
+     * @return array[] List of changed files since clock spec.
+     */
+    public function since($root, $clockSpec, $pattern = null)
+    {
+        if ($root instanceof Watch) {
+            $root = $root->getRoot();
+        }
+
+        $process = $this->processFactory->create(
+            sprintf('%s since %s %s %s', $this->getBinary(), $root, $clockSpec, $pattern)
+        );
+
+        return $this->runProcess($process)['files'];
+    }
+
+    /**
      * @param Process $process
      *
      * @return array JSON-decoded output of the watchman result.

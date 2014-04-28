@@ -550,6 +550,63 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::since()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function sinceIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('since-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory
+            ->shouldReceive('create')
+            ->with('watchman since /var/www/foo c:1398642060:75924:1:1 *.scss')
+            ->once()
+            ->andReturn($process);
+
+        $this->watchman->setProcessFactory($factory);
+        $this->assertEquals(
+            'sass/main.scss',
+            $this->watchman->since('/var/www/foo', 'c:1398642060:75924:1:1', '*.scss')[0]['name']
+        );
+    }
+
+    /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::since()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function sinceWithWatchObjectIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('since-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory
+            ->shouldReceive('create')
+            ->with('watchman since /var/www/foo c:1398642060:75924:1:1 *.scss')
+            ->once()
+            ->andReturn($process);
+
+        $watch = m::mock('Cocur\Watchman\Watch');
+        $watch->shouldReceive('getRoot')->once()->andReturn('/var/www/foo');
+
+        $this->watchman->setProcessFactory($factory);
+        $this->assertEquals(
+            'sass/main.scss',
+            $this->watchman->since($watch, 'c:1398642060:75924:1:1', '*.scss')[0]['name']
+        );
+    }
+
+    /**
      * @return Cocur\Watchman\Process\ProcessFactory
      */
     protected function getProcessFactoryMock()
