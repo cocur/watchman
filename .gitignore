@@ -5,3 +5,5 @@
 /*.sublime-workspace
 /composer.lock
 /phpunit.xml
+examples/bar/
+examples/foo/
