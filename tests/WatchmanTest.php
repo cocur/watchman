@@ -467,6 +467,46 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::log()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     * @expectedException \InvalidArgumentException
+     */
+    public function logGetsInvalidLogLevel()
+    {
+        $this->assertTrue($this->watchman->log('invalid', 'Foobar'));
+    }
+
+    /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::watchLogByLevel()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function watchLogByLevelIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+
+        $factory = $this->getProcessFactoryMock();
+        $factory->shouldReceive('create')->with('watchman --server-encoding=json --persistent log-level debug')->once()->andReturn($process);
+
+        $this->watchman->setProcessFactory($factory);
+        $this->watchman->watchLogByLevel('debug', function () {});
+    }
+
+    /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::watchLogByLevel()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     * @expectedException \InvalidArgumentException
+     */
+    public function watchLogByLevelGetsInvalidLogLevel()
+    {
+        $this->watchman->watchLogByLevel('invalid', function () {});
+    }
+
+    /**
      * @return Cocur\Watchman\Process\ProcessFactory
      */
     protected function getProcessFactoryMock()

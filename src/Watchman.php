@@ -2,6 +2,7 @@
 
 namespace Cocur\Watchman;
 
+use Closure;
 use Braincrafted\Json\Json;
 use Cocur\Watchman\Process\ProcessFactory;
 use Symfony\Component\Process\Process;
@@ -273,6 +274,42 @@ class Watchman
         $process = $this->processFactory->create(sprintf('%s log %s "%s"', $this->getBinary(), $level, $message));
 
         return (bool)$this->runProcess($process)['logged'];
+    }
+
+    /**
+     * Executes the `log-level` command.
+     *
+     * @param string  $logLevel Log level to watch (debug|error|off)
+     * @param Closure $callback Function to call when new message is received.
+     *
+     * @return void
+     *
+     * @see examples/log-level.php
+     */
+    public function watchLogByLevel($logLevel, Closure $callback)
+    {
+        if (!in_array($logLevel, ['debug', 'error', 'off'])) {
+            throw new \InvalidArgumentException(
+                sprintf('Log level "%s" does not exist. Must be one of: debug, error, off', $logLevel)
+            );
+        }
+
+        $process = $this->processFactory->create(
+            sprintf('%s --server-encoding=json --persistent log-level %s', $this->getBinary(), $logLevel)
+        );
+
+        $process->run(function ($type, $buffer) use ($callback) {
+            // @codeCoverageIgnoreStart
+            if (Process::ERR === $type) {
+                throw new \RuntimeException($buffer);
+            } else {
+                // Fix JSON
+                $buffer = preg_replace('/\}(\s*)\{/', ',', $buffer);
+                $message = Json::decode($buffer, true);
+                isset($message['log']) ? $callback(trim($message['log'])) : null;
+            }
+            // @codeCoverageIgnoreEnd
+        });
     }
 
     /**

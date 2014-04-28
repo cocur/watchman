@@ -64,7 +64,7 @@ Supported Watchman commands
 - find ✓
 - ~~query~~
 - ~~since~~
-- ~~log-level~~
+- log-level ✓
 - log ✓
 - shutdown-server ✓
 - ~~subscribe~~
