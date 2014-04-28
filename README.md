@@ -57,7 +57,7 @@ Supported Watchman commands
 - watch ✓
 - watch-list ✓
 - watch-del ✓
-- ~~clock~~
+- clock ✓
 - trigger ✓
 - trigger-list ✓
 - trigger-del ✓

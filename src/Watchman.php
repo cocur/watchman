@@ -218,6 +218,24 @@ class Watchman
     }
 
     /**
+     * Executes the `clock` command.
+     *
+     * @param Watch|string $root Watch object or root directory.
+     *
+     * @return string Clock
+     */
+    public function getClock($root)
+    {
+        if ($root instanceof Watch) {
+            $root = $root->getRoot();
+        }
+
+        $process = $this->processFactory->create(sprintf('%s clock %s', $this->getBinary(), $root));
+
+        return $this->runProcess($process)['clock'];
+    }
+
+    /**
      * @param Process $process
      *
      * @return array JSON-decoded output of the watchman result.

@@ -361,6 +361,49 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::getClock()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function getClockIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('clock-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory->shouldReceive('create')->with('watchman clock /var/www/foo')->once()->andReturn($process);
+
+        $this->watchman->setProcessFactory($factory);
+        $this->assertEquals('c:1398642060:75924:1:12', $this->watchman->getClock('/var/www/foo'));
+    }
+
+    /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::getClock()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function getClockWithWatchIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('clock-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory->shouldReceive('create')->with('watchman clock /var/www/foo')->once()->andReturn($process);
+
+        $watch = m::mock('Cocur\Watchman\Watch');
+        $watch->shouldReceive('getRoot')->once()->andReturn('/var/www/foo');
+
+        $this->watchman->setProcessFactory($factory);
+        $this->assertEquals('c:1398642060:75924:1:12', $this->watchman->getClock($watch));
+    }
+
+    /**
      * @return Cocur\Watchman\Process\ProcessFactory
      */
     protected function getProcessFactoryMock()
