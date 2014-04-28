@@ -86,4 +86,26 @@ class Watch
     {
         return $this->watchman->listTriggers($this->root);
     }
+
+    /**
+     * Returns the clock of the watch.
+     *
+     * @return string Clock of the watch.
+     */
+    public function getClock()
+    {
+        return $this->watchman->getClock($this->root);
+    }
+
+    /**
+     * Finds the files in the watch that match the given pattern.
+     *
+     * @param string $pattern Pattern.
+     *
+     * @return array[] List of files that match the pattern.
+     */
+    public function find($pattern)
+    {
+        return $this->watchman->find($this->root, $pattern);
+    }
 }

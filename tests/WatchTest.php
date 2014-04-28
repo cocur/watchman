@@ -98,4 +98,26 @@ class WatchTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('jsfiles', $this->watch->listTriggers()[0]['name']);
     }
+
+    /**
+     * @test
+     * @covers Cocur\Watchman\Watch::getClock()
+     */
+    public function getClockReturnsClock()
+    {
+        $this->watchman->shouldReceive('getClock')->with($this->root)->once();
+
+        $this->watch->getClock();
+    }
+
+    /**
+     * @test
+     * @covers Cocur\Watchman\Watch::find()
+     */
+    public function findFindsFilesThatMatchPattern()
+    {
+        $this->watchman->shouldReceive('find')->with($this->root, '*.scss')->once();
+
+        $this->watch->find('*.scss');
+    }
 }
