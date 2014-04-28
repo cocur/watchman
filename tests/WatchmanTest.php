@@ -507,6 +507,49 @@ class WatchmanTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::query()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function queryIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('query-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory->shouldReceive('create')->with('watchman query /var/www/foo *.scss')->once()->andReturn($process);
+
+        $this->watchman->setProcessFactory($factory);
+        $this->assertEquals('sass/main.scss', $this->watchman->query('/var/www/foo', '*.scss')[0]['name']);
+    }
+
+    /**
+     * @test
+     * @covers Cocur\Watchman\Watchman::query()
+     * @covers Cocur\Watchman\Watchman::runProcess()
+     */
+    public function queryWithWatchObjectIsSuccessful()
+    {
+        $process = $this->getProcessMock();
+        $process->shouldReceive('run')->once();
+        $process->shouldReceive('stop')->once();
+        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+        $process->shouldReceive('getOutput')->once()->andReturn($this->getFixtures('query-success.json'));
+
+        $factory = $this->getProcessFactoryMock();
+        $factory->shouldReceive('create')->with('watchman query /var/www/foo *.scss')->once()->andReturn($process);
+
+        $watch = m::mock('Cocur\Watchman\Watch');
+        $watch->shouldReceive('getRoot')->once()->andReturn('/var/www/foo');
+
+        $this->watchman->setProcessFactory($factory);
+        $this->assertEquals('sass/main.scss', $this->watchman->query($watch, '*.scss')[0]['name']);
+    }
+
+    /**
      * @return Cocur\Watchman\Process\ProcessFactory
      */
     protected function getProcessFactoryMock()

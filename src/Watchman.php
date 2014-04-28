@@ -313,6 +313,25 @@ class Watchman
     }
 
     /**
+     * Executes the `query` command.
+     *
+     * @param Watch|string $root    Watch or root directory.
+     * @param string       $pattern Pattern.
+     *
+     * @return array[] List of files that match the query.
+     */
+    public function query($root, $pattern)
+    {
+        if ($root instanceof Watch) {
+            $root = $root->getRoot();
+        }
+
+        $process = $this->processFactory->create(sprintf('%s query %s %s', $this->getBinary(), $root, $pattern));
+
+        return $this->runProcess($process)['files'];
+    }
+
+    /**
      * @param Process $process
      *
      * @return array JSON-decoded output of the watchman result.
